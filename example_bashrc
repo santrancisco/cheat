@@ -1,0 +1,51 @@
+
+### This is where we store temporary notes before we sanitise sensitive data and move it to appropriate cheatsheets
+export NOTE="$HOME/terminalnotes.md"
+
+### tnote is our function/command to take note in bash. Upon running tnote, we will have a choice of saving one of 
+### last 20 commands in current tty history to our note, a new command or one stored in clipboard, eg something we found online
+function tnote() {
+    HISTORY_ENTRIES=`history | tail -n 20`
+    echo "Last few entries in your history are:"
+    echo "$HISTORY_ENTRIES"  | awk '{ printf "\033[35m" $1 "\033[0m"; $1 = ""; print $0;}'
+    echo "---------------------------------"
+    echo -e "\033[35mnew\033[0m Type your own command "
+    echo -e "\033[35mclip\033[0m Get from clipboard "
+    echo ""
+    exec 3<>/dev/tty
+    while true; do
+	read -u 3 -p "Choose command (purple above): " choice
+	cmd=""
+        if $(echo "$HISTORY_ENTRIES" | grep -q "$choice"); then
+           cmd=$(echo "$HISTORY_ENTRIES" | grep "$choice" | sed -e "s/ *[0-9]* *//")
+	fi
+	
+	if [ "$choice" == "new" ]; then
+	   read -u 3 -p "Enter custom command: " cmd
+	fi
+	if [ "$choice" == "clip" ]; then
+	   cmd=`xclip -selection clipboard -o`
+	fi
+
+	if [ "$cmd" != "" ]; then
+            echo -e "\nYou picked: \033[0;34m$cmd\033[0m"
+            read -u 3 -p "Enter descriptions: " desc
+            echo -e "\n$desc\n" >> $NOTE
+            echo '```bash' >> $NOTE
+            echo "$cmd" >> $NOTE
+            echo '```' >> $NOTE
+            echo -e "Note is appended to \033[0;32m$NOTE\033[0m\n"
+            break
+        fi
+        echo "Pick again"
+    done
+
+}
+
+### This is our cheat domain, used by our cheat function/command AND also our static site build script.
+export CHEATDOMAIN="sancheatsheet.surge.sh"
+
+### Our cheat function/command. it's a wrapper for a simple curl command to let us read cheat.
+function ch {
+	curl -s "http://sancheatsheet.surge.sh/$1"
+}

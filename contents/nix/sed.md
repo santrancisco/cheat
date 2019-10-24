@@ -1,0 +1,1 @@
+Escape single quote : Use `\x27` instead `sed 's/user projects/user\x27 projects/g'`
