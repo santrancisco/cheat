@@ -1,5 +1,7 @@
 ### WTF is this?
 
+To read in more details and my frustration with remembering things, visit my [blog post](https://blog.ebfe.pw/posts/terminalnote.html).
+
 I like [cheat.sh](cheat.sh) idead and wanted to do something similar without bloated python flask server. I also want a simple/quick way to record interesting command snippets without disrupting my work.
 
 There are 2 parts of this:
