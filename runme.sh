@@ -67,6 +67,26 @@ function gendoc {
     cd ..
 }
 
+function add_autocomplete {
+    autocomplete=$(cat $PUBLICFOLDER/index.html | tr '\n' ' ')
+    # Adding auto complete into .bash_completion 
+    if [ ! -f $HOME/.bash_completion ]; then
+        echo "[+] Creating .bash_completion in $HOME"
+        echo "#!/usr/bin/env bash" > $HOME/.bash_completion 
+    fi
+
+    if $(grep -q '##CHBASHCOMPLETION##' $HOME/.bash_completion); then 
+        echo "[+] Found existing .bash_completion file!"
+    else
+        echo "##CHBASHCOMPLETION##" >> $HOME/.bash_completion 
+        echo "" >> $HOME/.bash_completion 
+    fi
+    autocomplete=$(echo complete -W \"$autocomplete\" ch )
+    echo "[+] Adding new ch bash completion in .bash_completion"
+    sed -i '/##CHBASHCOMPLETION##/!b;n;cREPLACELINEMARKER' $HOME/.bash_completion
+    sed -i "s|REPLACELINEMARKER|$autocomplete|g" $HOME/.bash_completion
+}
+
 function pushtosurge {
     echo "[+] Pushing to surge"
     surge $PUBLICFOLDER -d $CHEATDOMAIN
@@ -78,6 +98,7 @@ function build {
     fi
     mkdir -p $PUBLICFOLDER
     gendoc
+    add_autocomplete
     pushtosurge
 }
 
@@ -92,4 +113,3 @@ function help {
 # If nothing provided, run help function
 set -e
 ${@:-help}
-
