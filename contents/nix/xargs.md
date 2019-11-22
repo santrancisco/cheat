@@ -1,3 +1,12 @@
+### XARGS in script
+If you want to run some function, you might wanna try to `export -f` it first so you can use it in subshell.
+```bash 
+function hello {
+  echo "Hello $1"
+}
+export -f hello
+echo -e "Nick\nMarry" | xargs -I {} bash -c "hello {}"
+```
 
 ### XARG snippets
 
@@ -19,3 +28,8 @@ cat hugelist.csv | \
 sort -u 
 
 ```
+Readlist, curl request in 10 parallel threads
+```
+cat list.txt | xargs -P10 -I {} curl -X GET -H "Host:127.0.0.1" {}
+```
+
