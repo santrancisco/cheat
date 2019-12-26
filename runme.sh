@@ -69,7 +69,8 @@ function gendoc {
 }
 
 function add_autocomplete {
-    autocomplete=$(cat $PUBLICFOLDER/index.html | tr '\n' ' ')
+    # Just gonna grep for all lines starting with / and shove it in our bash completion cause i'm lazy :)
+    autocomplete=$(cat $PUBLICFOLDER/index.html | grep '^\/' | tr '\n' ' ')
     # Adding auto complete into .bash_completion 
     if [ ! -f $HOME/.bash_completion ]; then
         echo "[+] Creating .bash_completion in $HOME"
@@ -77,8 +78,9 @@ function add_autocomplete {
     fi
 
     if $(grep -q '##CHBASHCOMPLETION##' $HOME/.bash_completion); then 
-        echo "[+] Found existing .bash_completion file!"
+        echo "[+] Found existing .bash_completion entry!"
     else
+        echo "[+] Create new .bash_completion entry!"
         echo "##CHBASHCOMPLETION##" >> $HOME/.bash_completion 
         echo "" >> $HOME/.bash_completion 
     fi
@@ -94,6 +96,16 @@ function pushtosurge {
 }
 
 function build {
+    if [ -d "$PUBLICFOLDER" ]; then
+        rm -rIv $PUBLICFOLDER
+    fi
+    mkdir -p $PUBLICFOLDER
+    gendoc
+    pushtosurge
+}
+
+
+function build_with_autocomplete {
     if [ -d "$PUBLICFOLDER" ]; then
         rm -rIv $PUBLICFOLDER
     fi
