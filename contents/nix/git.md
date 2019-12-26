@@ -18,15 +18,15 @@ git merge remotes/origin/feat/cert-auth
 
 ## Dev
 
-create a new localbranch to track local changes and push it to github to track it in a new branch
+create a new `sanmessingaround` local branch to track local changes and push it to remote branch in github to track it and work with others
 
 ```bash
     git checkout -b sanmessingaround
     git add 
     git commit "messing around"
-    git push -u origin sanmessingaround
+    git push origin sanmessingaround --set-upstream
 ```
-Make your changes… To catch up with master:
+After making your changes & you want to catch up with master:
 
 ```bash
     git checkout master; 
@@ -51,11 +51,17 @@ If you want to squash every commit from commit `9358e6cad6944f09bc1aa51d9a7cf3fc
 ```bash
 git rebase -i 9358e6cad6944f09bc1aa51d9a7cf3fc262da952
 
-##############################################
-# Text editor open                           #
-# "pick" the top commit to squash everything #
-# underneath it with "squash - save the file #
-##############################################
+#################################################
+# Text editor open                              #
+# "pick" the top commit to squash everything    #
+# underneath it with "squash" thensave the file #
+#################################################
 
 git push -f origin
 ```
+
+**Useful commands**
+
+`git log --graph` Shows graph lines with commits, branches.
+`git diff --stat` Shows stat about files changes
+`git log --grep="search string"` Search git log for interesting commits.

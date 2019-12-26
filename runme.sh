@@ -59,7 +59,8 @@ export -f convertdoc
 function gendoc {
     CONTENTFOLDER='contents'
     cd $CONTENTFOLDER
-    echo "" > ../$PUBLICFOLDER/index.html
+    echo "<h1>This site should only be access via curl.:)</h1>" > ../$PUBLICFOLDER/index.html
+    printf '\033[2J Below is the list of available cheatsheets:\n' >> ../$PUBLICFOLDER/index.html
     echo "[+] Going into folder $CONTENTFOLDER" 
     if [ -z "${FILES:-}" ]; then
         find ./ -name '*.md' -exec bash -c "PUBLICFOLDER=$PUBLICFOLDER convertdoc {}" \;

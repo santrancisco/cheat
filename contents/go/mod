@@ -1,0 +1,15 @@
+### Go Modules
+
+For scripting a go app, we can try using comment in package main to let go module know the import path for our go project
+
+```
+    package main // import "github.com/santrancisco/randoms/GO/slackhandler"
+```
+
+To  initialise go module, use `go mod init {name, eg gitlab.com/codedra/blah}` 
+
+To clean cache `go clean --modcache` 
+
+To download specific version/commit : `go get "github.com/importpath@e224{COMMIT-HASH}`
+
+To remove unused dependencies or install new ones `go mod tidy`

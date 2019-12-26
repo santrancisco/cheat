@@ -24,5 +24,9 @@ readlist, curl request in 10 parallel threads
 cat list.txt | xargs -P10 -I {} curl -X GET {}
 ```
 
+Only print out http_code for each request
 
+```bash
+   curl --write-out %{http_code} --silent --output /dev/null google.com
+```
 
