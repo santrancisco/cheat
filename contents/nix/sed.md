@@ -11,4 +11,10 @@ An example of replacing a whole line after `##CHBASHCOMPLETION##` with REPLACELI
 ```bash
 sed -i '/##CHBASHCOMPLETION##/!b;n;cREPLACELINEMARKER' $HOME/.bash_completion
 sed -i "s|REPLACELINEMARKER|$autocomplete|g" $HOME/.bash_completion
-``
+```
+
+Combine **every** 3 strings into 1 and replace newline with comma.
+
+```bash
+sed 'N;N;N;/\n/,/g' -i filename.txt
+```

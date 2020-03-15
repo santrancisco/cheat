@@ -38,6 +38,15 @@ docker pull
 docker run --rm -it php php -a
 ```
 
+WPScan
+```bash
+docker pull wpscanteam/wpscan
+# Enumerate user
+docker run -it --rm wpscanteam/wpscan --url https://ourtarget.com/ --enumerate u
+#Scan website
+docker run -it --rm wpscanteam/wpscan --url https://ourtarget.com/ -o scanoutput.txt --api-token {{https://wpvulndb.com/ token}}
+```
+
 ## Notes
 
  - Linux stores images, overlay file systems, etc here `/var/lib/docker/`

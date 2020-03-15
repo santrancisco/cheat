@@ -32,6 +32,6 @@ Hashcat comes with some nice rules to transform wordlist. Example to use leetspe
 hashcat --stdout -r rules/unix-ninja-leetspeak.rule name.txt
 ```
 
-
+Online cracking to playaround with: https://wpa-sec.stanev.org/?submit
 
 **Resource** : https://hashcat.net/wiki/doku.php?id=hashcat
