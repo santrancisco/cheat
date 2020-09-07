@@ -1,5 +1,3 @@
-To be updated
-
 ### Drop to python interactive console in middle of code
 
 The usual pdb
@@ -20,6 +18,11 @@ import IPython;IPython.embed()
 a = "2019-10-02T04:20:32.15Z"
 t = time.strptime(a,"%Y-%m-%dT%H:%M:%S.%fZ") 
 ```
+### Tips
 
-### Subtracting time
+Upgrading to full tty from dodgy shell
+
+```
+python -c 'import pty; pty.spawn("/bin/bash")'
+```
 

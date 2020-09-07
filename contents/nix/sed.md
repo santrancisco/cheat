@@ -18,3 +18,18 @@ Combine **every** 3 strings into 1 and replace newline with comma.
 ```bash
 sed 'N;N;N;/\n/,/g' -i filename.txt
 ```
+
+Every file in the folder, replace the 2nd line with `author = "(Search result GROUP 1)"`
+```bash
+ls | xargs -I {} sed -i '2s/- \(.*\)\r/author = "\1"/' {}
+```
+
+Remove 4th line in file.txt
+```bash
+sed -i '4d' file.txt
+```
+
+Add 2nd line to file.txt
+```bash
+sed -i '1 a Content of new 2nd line' file.txt
+```

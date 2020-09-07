@@ -60,6 +60,27 @@ git rebase -i 9358e6cad6944f09bc1aa51d9a7cf3fc262da952
 git push -f origin
 ```
 
+**Update a forked project**
+
+
+```
+# Add the remote, call it "upstream":
+git remote add upstream https://github.com/whoever/whatever.git
+
+# Fetch all the branches of that remote into remote-tracking branches,
+# such as upstream/master:
+git fetch upstream
+
+# Make sure that you're on your master branch:
+git checkout master
+
+# Rebase your master
+git rebase upstream/master
+
+# Push the change to our master
+git push -f origin master
+```
+
 **Useful commands**
 
 `git log --graph` Shows graph lines with commits, branches.

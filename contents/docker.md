@@ -16,6 +16,9 @@ function dockershellshhere() {
     docker run --rm -it --entrypoint=/bin/sh -v `pwd`:/${dirname} -w /${dirname} "$@"
 }
 ```
+To get interactive bash inside a running container:
+
+`docker exec -i {containerID} bash`
 
 ----------
 ## Interesting docker containers
@@ -38,26 +41,60 @@ docker pull
 docker run --rm -it php php -a
 ```
 
+Automate decoding/decryption tool 
+```
+docker run -it --rm remnux/ciphey
+```
+
 WPScan
 ```bash
 docker pull wpscanteam/wpscan
 # Enumerate user
 docker run -it --rm wpscanteam/wpscan --url https://ourtarget.com/ --enumerate u
-#Scan website
+# Scan website with wpvulndb token
 docker run -it --rm wpscanteam/wpscan --url https://ourtarget.com/ -o scanoutput.txt --api-token {{https://wpvulndb.com/ token}}
+# Scan with custom content and plugin directory
+docker run -it --rm wpscanteam/wpscan --url https://ourtarget.com/ --wp-content-dir content  --wp-plugin-dir "content/plugins"
 ```
+
+SFTP File transfer
+```bash
+docker pull atmoz/sftp
+docker run -v /host/upload:/home/foo/upload -p 2222:22 -d atmoz/sftp foo:pass:1001
+```
+
+Splunk in docker: https://github.com/splunk/docker-splunk
 
 ## Notes
 
  - Linux stores images, overlay file systems, etc here `/var/lib/docker/`
  - Learn about built step for the container : `docker image history -H --no-trunc ripsan`
+ - Inspect a docker container and learn about things like environment variables: `docker inspect {id}`
  - Live stream of usage : `docker stats`
  - Run and immediately attach to stdout for a container `docker start 9b94b927f1fb --attach`
  - Overwrite entrypoint for that and start instance temporary `docker run -ti --entrypoint /bin/bash 413171555710`
  - Delete all unused docker containers: `docker rm $(docker ps -q --filter "status=exited")`
  - Build docker images from current folder and delete all intermediate containers `docker build -t=myimage --rm=true .`
+ - Copy file from docker: `docker cp 628ff479a093:/eapol/test.config ./`
  - Create tag and push to dockerhub
+ - Oneline docker escape GCP Cloudshell to host OS: `sudo docker -H unix:///google/host/var/run/docker.sock run -v /:/host -it ubuntu chroot /host /bin/bash`
+
 ```bash
 docker tag localproject:latest santrancisco/sanctf:latest
 docker push santrancisco/sanctf:latest
+```
+
+## ECR note:
+ - List all repositories in a region `aws ecr describe-repositories --region ap-southeast-2`
+ - Authenticate to ECR at a region: `aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin {Accountid}.dkr.ecr.ap-southeast-2.amazonaws.com`
+ - Build the project `docker build -t firefoxsend .`
+ - Tag it with ECR url `docker tag firefoxsend:latest {Accountid}.dkr.ecr.ap-southeast-2.amazonaws.com/firefoxsend:latest`
+ - Pushing docker containers to ECR `docker push {Accountid}.dkr.ecr.ap-southeast-2.amazonaws.com/firefoxsend:latest`
+
+Series of command to list all repositories in one region, list the images in it and grab the ECR vulnerability image scanning result.
+
+```
+aws --region ap-southeast-2 ecr describe-repositories 
+aws --region ap-southeast-2 ecr describe-images --repository-name firefoxsend
+aws --region ap-southeast-2 ecr describe-image-scan-findings --repository-name firefoxsend --image-id imageTag=latest
 ```
