@@ -24,9 +24,15 @@ readlist, curl request in 10 parallel threads
 cat list.txt | xargs -P10 -I {} curl -X GET {}
 ```
 
-Only print out http_code for each request
+Print out http_code and the size of response for request:
 
 ```bash
-   curl --write-out %{http_code} --silent --output /dev/null google.com
+   curl --write-out "%{http_code} - %{size_download}\n" --silent --output /dev/null google.com
+```
+
+Using curl for path traversal, use --path-as-is
+
+```
+curl --path-as-is  -v "https://someapp.com/app/../../../../../etc/passwd"
 ```
 

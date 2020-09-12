@@ -5,47 +5,85 @@ export NOTE="$HOME/terminalnotes.md"
 ### tnote is our function/command to take note in bash. Upon running tnote, we will have a choice of saving one of 
 ### last 20 commands in current tty history to our note, a new command or one stored in clipboard, eg something we found online
 function tnote() {
+    ## Append what we have first
+    history -a
+    ## Traping CTRL+C to return to terminal
+    trap 'return' SIGINT
+    CHOICE=18 ## Set default choice to the command before calling tnote
+    while true
+    do
+    CHOICE=n=$(($CHOICE%22))
+    clear
     HISTORY_ENTRIES=`history | tail -n 20`
+    SAVEIFS=$IFS   # Save current IFS
+    IFS=$'\n'      # Change IFS to new line
+    HISTORY_ARRAY=($(echo "$HISTORY_ENTRIES"  | awk '{ $1 = ""; print $0;}' |  sed 's/^ *//g';echo "\033[41mEnter your own command\033[0m";echo "\033[41mUse clipboard\033[0m")) # Turn last 20 history entries into array
+    IFS=$SAVEIFS   # Change IFS back
+    CURRENTCOMMAND="${HISTORY_ARRAY[$CHOICE]}"
+
     echo "Last few entries in your history are:"
-    echo "$HISTORY_ENTRIES"  | awk '{ printf "\033[35m" $1 "\033[0m"; $1 = ""; print $0;}'
+
+    for option in `seq 0 21`
+    do
+      if [[ $option -eq $CHOICE ]]; then
+        echo -e "\033[93m $option\t${HISTORY_ARRAY[$option]} \033[0m"
+      else
+        echo -e "\033[35m $option\033[0m\t${HISTORY_ARRAY[$option]}"
+      fi
+    done
+
     echo "---------------------------------"
-    echo -e "\033[35mnew\033[0m Type your own command "
-    echo -e "\033[35mclip\033[0m Get from clipboard "
+    echo "Default choice: $CURRENTCOMMAND"
     echo ""
     exec 3<>/dev/tty
-    while true; do
-	read -u 3 -p "Choose command (purple above): " choice
-	cmd=""
-        if $(echo "$HISTORY_ENTRIES" | grep -q "$choice"); then
-           cmd=$(echo "$HISTORY_ENTRIES" | grep "$choice" | sed -e "s/ *[0-9]* *//")
-	fi
-	
-	if [ "$choice" == "new" ]; then
-	   read -u 3 -p "Enter custom command: " cmd
-	fi
-	if [ "$choice" == "clip" ]; then
-	   cmd=`xclip -selection clipboard -o`
-	fi
+    read -r -sn1 -p "Use arrow key to choose command: " choice
+    case $choice in
+        A) CHOICE=$(($CHOICE-1)); continue ;; # Up
+        B) CHOICE=$(($CHOICE+1)); continue ;; # Down
+        # C) echo right; continue ;;
+        # D) echo left; continue ;;
+        '') echo "" ;; # Enter key
+        *) continue ;; # Ignore everything else
+    esac
 
-	if [ "$cmd" != "" ]; then
+    cmd="$CURRENTCOMMAND"
+    if [[ $CHOICE -eq 20 ]]; then
+       read -e -u 3 -p "Enter custom command: " cmd
+    fi
+    if [[ $CHOICE -eq 21 ]]; then
+       cmd=`xclip -selection clipboard -o`
+    fi
+
+    if [ "$cmd" != "" ]; then
             echo -e "\nYou picked: \033[0;34m$cmd\033[0m"
-            read -u 3 -p "Enter descriptions: " desc
+            read -e -u 3 -p "Enter descriptions: " desc
             echo -e "\n$desc\n" >> $NOTE
             echo '```bash' >> $NOTE
             echo "$cmd" >> $NOTE
             echo '```' >> $NOTE
             echo -e "Note is appended to \033[0;32m$NOTE\033[0m\n"
             break
-        fi
-        echo "Pick again"
+    fi
+    echo "Pick again"
     done
+}
 
+# Helper function to quickly search current tnote file
+function tnotefind() {
+    pattern=$(echo "$@"|sed 's/ /(.(?<!\\`\\`\\`))*?/g')
+    findregex="(?s)\`\`\`bash(.(?<!\`\`\`))*?$pattern(.(?<!\`\`\`))*?\`\`\`\n"
+    grep -Pzo "$findregex" $NOTE  | sed 's/\x0//g' |consolemd 
+}
+
+# Edit tnote file directly.
+function tnoteedit(){
+    vim $NOTE
 }
 
 ### This is our cheat domain, used by our cheat function/command AND also our static site build script.
-export CHEATDOMAIN="sancheatsheet.surge.sh"
+export CHEATDOMAIN="ch.ebfe.pw"
 
 ### Our cheat function/command. it's a wrapper for a simple curl command to let us read cheat.
 function ch {
-	curl -s "http://sancheatsheet.surge.sh/$1"
+        curl -s "http://$CHEATDOMAIN/$1"
 }

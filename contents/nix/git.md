@@ -86,3 +86,17 @@ git push -f origin master
 `git log --graph` Shows graph lines with commits, branches.
 `git diff --stat` Shows stat about files changes
 `git log --grep="search string"` Search git log for interesting commits.
+`git config --get remote.origin.url` Get remote URL of repo
+`git remote show origin` Get full output about remote git
+`git status --ignored`  Show modified files as well as ignored files
+
+3 useful commands to exclude local changes, re-include and list what are excluded:
+
+ - `git update-index --assume-unchanged {filename}`
+ - `git update-index --no-assume-unchanged {filename}`
+ - `git ls-files -v`
+
+2 commands to publish the folder `web` as github page by creating a subtree branch. 2nd command force update to gh-pages branch when you mess around with branches.
+
+ - `git subtree push --prefix web origin gh-pages`
+ - `git push origin `git subtree split --prefix web master`:gh-pages --force`

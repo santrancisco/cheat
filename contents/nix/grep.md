@@ -10,7 +10,7 @@ Running tail on log file and use grep on continuous stream to filter out things 
 tail -F apache_error.log   | grep --line-buffered  -v 103.228.147.62
 ```
 
-simple use of if with multiple grep to identify file that does not contain specific word AND contains some other words ... useful with xargs to run through large number of files
+simple use of if with multiple grep to identify lines that contains some words AND does not contain specific word ... useful with xargs to run through large number of files
 
 ```bash
 if ! grep -q "donotinclude" ~/test/meh.tt && grep -Pq "(this|that)" ~/test/meh.tt; then echo "found_it"; fi
