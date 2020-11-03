@@ -50,7 +50,8 @@ function convertdoc {
     echo "[+] Converting $FILENAME" 
     mkdir -p $DESTINATIONFOLDER
     cat $FILENAME | consolemd > $DESTINATIONFILE
-    echo "$DIRNAME/$BASENAME" |sed 's/^\.\//\//g' >> ../$PUBLICFOLDER/index.html
+    echo "[$DIRNAME/$BASENAME](https://$CHEATDOMAIN/index.html?f=/web/$FILENAME)" |sed 's/^\.\//\//g' >> ../$PUBLICFOLDER/index.md
+    echo "$DIRNAME/$BASENAME" |sed 's/^\.\//\//g' >> ../$PUBLICFOLDER/list.txt
 }
 
 export -f convertdoc
@@ -59,18 +60,23 @@ export -f convertdoc
 function gendoc {
     CONTENTFOLDER='contents'
     cd $CONTENTFOLDER
-    echo "<h1>This site should only be access via curl.:)</h1>" > ../$PUBLICFOLDER/index.html
-    printf '\033[2J Below is the list of available cheatsheets:\n' >> ../$PUBLICFOLDER/index.html
+#    echo "<h1>This site should only be access via curl.:)</h1>" > ../$PUBLICFOLDER/index.html
+#    printf '\033[2J Below is the list of available cheatsheets:\n' >> ../$PUBLICFOLDER/index.html
     echo "[+] Going into folder $CONTENTFOLDER" 
     if [ -z "${FILES:-}" ]; then
         find ./ -name '*.md' -exec bash -c "PUBLICFOLDER=$PUBLICFOLDER convertdoc {}" \;
     fi
+    echo "[+] Generate web version"
     cd ..
+    cp $CONTENTFOLDER/index.html $PUBLICFOLDER/index.html
+    mkdir -p $PUBLICFOLDER/web
+    echo "[+] Copy markdown files to publish web folder"
+    cp -rf $CONTENTFOLDER/* $PUBLICFOLDER/web/ 
 }
 
 function add_autocomplete {
     # Just gonna grep for all lines starting with / and shove it in our bash completion cause i'm lazy :)
-    autocomplete=$(cat $PUBLICFOLDER/index.html | grep '^\/' | tr '\n' ' ')
+    autocomplete=$(cat $PUBLICFOLDER/list.txt | grep '^\/' | tr '\n' ' ')
     # Adding auto complete into .bash_completion 
     if [ ! -f $HOME/.bash_completion ]; then
         echo "[+] Creating .bash_completion in $HOME"
@@ -95,7 +101,7 @@ function pushtosurge {
     surge $PUBLICFOLDER -d $CHEATDOMAIN
 }
 
-function build {
+function build_without_autocomplete {
     if [ -d "$PUBLICFOLDER" ]; then
         rm -rIv $PUBLICFOLDER
     fi
@@ -105,7 +111,7 @@ function build {
 }
 
 
-function build_with_autocomplete {
+function build {
     if [ -d "$PUBLICFOLDER" ]; then
         rm -rIv $PUBLICFOLDER
     fi

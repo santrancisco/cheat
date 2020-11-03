@@ -72,3 +72,5 @@ Put it together, we can - for example this is to find Pet with name less than 3 
 index=main sourcetype=pet PetName="*" | eval namelength=len(PetName) | eval "ReconstructedURL"="https://seriouslyrandompetshop.com"+$genderid$+"/"+$petid$ |table ReconstructedURL namelength |  where namelength<4 | dedup ReconstructedURL
 
 ```
+
+Or just ask Yohann for help.

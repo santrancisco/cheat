@@ -26,3 +26,8 @@ Upgrading to full tty from dodgy shell
 python -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
+Run simple http server in port 8889
+```
+python2.7 -m SimpleHTTPServer 8889
+python3 -m http.server 8889
+```

@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Marked in the browser</title>
+  <link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.2/styles/default.min.css">
+</head>
+<body>
+  <a href="/">BACK TO HOME</a>
+  <div id="content"></div>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.2/highlight.min.js"></script>
+  <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.2/languages/go.min.js"></script>
+  <script>
+  
+  function getUrlVars() {
+      var vars = {};
+      var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+          vars[key] = value;
+      });
+      return vars;
+  }
+  
+  function highlightCode() {
+      var pres = document.querySelectorAll("pre>code");
+      for (var i = 0; i < pres.length; i++) {
+          hljs.highlightBlock(pres[i]);
+      }
+  }    
+  showdown.setFlavor('github');
+  var conv = new showdown.Converter({metadata: true});
+  conv.setFlavor('github');
+  f=getUrlVars()["f"];
+  if (f == undefined){
+    f="index.md"
+  }
+  fetch(f).then(response=>response.text()).then(data=>{
+      document.getElementById('content').innerHTML = conv.makeHtml(data);
+  highlightCode();
+     //   marked(data);
+  });
+
+  </script>
+</body>
+</html>
