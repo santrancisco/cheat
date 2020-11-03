@@ -58,6 +58,8 @@ export -f convertdoc
 
 # Try calling this with ./task.sh callme Whatever
 function gendoc {
+    echo "" > $PUBLICFOLDER/index.md
+    echo "" > $PUBLICFOLDER/list.txt
     CONTENTFOLDER='contents'
     cd $CONTENTFOLDER
 #    echo "<h1>This site should only be access via curl.:)</h1>" > ../$PUBLICFOLDER/index.html

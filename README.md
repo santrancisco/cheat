@@ -1,6 +1,6 @@
 ### What is this?
 
-*UPDATE: latest runme.sh will append/update .bash_completion to include our `ch` function autocompletion*
+*UPDATE: I finally bother to add webview capability.It is literally just a HTML page that loads and renders markdown file directly*
 
 To read in more details and my frustration with remembering things, visit my [blog post](https://blog.ebfe.pw/posts/terminalnote.html).
 
