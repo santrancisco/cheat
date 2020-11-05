@@ -55,7 +55,7 @@ The syntax for jq is pretty coherent:
 ### Mapping and Transforming
 
 | Description                          | Command |
-| ----------------------------------- -| :-----: |
+| -------------------------------------| :-----: |
 | Add + 1 to all items                 | `jq 'map(.+1)'` |
 | Delete 2 items                       | `jq 'del(.[1, 2])'` |
 | Concatenate arrays                   | `jq 'add'` |
@@ -75,7 +75,7 @@ __WTF:__ When using jq with piping in terminal, any version below jq 1.6 will en
 
 jq can also be used to insert/modify values inside a json 
 
-```bash
+```
 cat Preference.json  |\
   jq '.session.restore_on_startup=4' |\
   jq '.session.startup_urls=["https://ebfe.pw"]'

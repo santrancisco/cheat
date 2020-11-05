@@ -1,7 +1,7 @@
 ### Tips
 
 Just an example creating TABLE with some tricks
-```sql
+```
 CREATE TABLE test(
   id             bigint      NOT NULL,
   varcharmaxlen  varchar(60) NOT NULL,    -- varchar can set max lenght, text type cannot
@@ -16,7 +16,7 @@ INSERT INTO test(id,varcharmaxlen,stringarray,positivenum,jsondoc) VALUES (1,'va
 
 Example to CREATE a domain that validate email addresses. We can take out the plus(+) sign here to ignore alias addresses.
 
-```sql
+```
 CREATE EXTENSION citext;
 CREATE DOMAIN email AS citext
   CHECK ( value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$' );
