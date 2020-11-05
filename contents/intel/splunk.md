@@ -62,6 +62,7 @@ Below is how you could map numerical id to a character id base on the id coming 
 
 **Field extractions** is particular useful to pull exact information out of log either via custom delimeter or regex.  
 Eg below is a silly example to pull "PetName" field from a string in the log.
+
 ```
 The name of your pet is (?<PetName>.*).
 ```

@@ -75,7 +75,7 @@ __WTF:__ When using jq with piping in terminal, any version below jq 1.6 will en
 
 jq can also be used to insert/modify values inside a json 
 
-```
+```bash
 cat Preference.json  |\
   jq '.session.restore_on_startup=4' |\
   jq '.session.startup_urls=["https://ebfe.pw"]'
@@ -83,7 +83,7 @@ cat Preference.json  |\
 
 Elaborate example:
 
-```
+```bash
 [
     {
         "nodes":[ 0,2],
@@ -106,7 +106,8 @@ Fun:
  - slicing the new array
  - reconstruct new array again into another array of dictionaries with Name constructed from NodeType and its index.(Alpha-1,Beta-2 and so on)
  
-```
+
+```bash
 jq ' reduce .[] as $k ([]; .[$k.nodes[]] = ($k|{nodetype,dict,bool4})) 
    | to_entries 
    | .[] 

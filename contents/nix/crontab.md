@@ -1,7 +1,7 @@
 
 ### Syntax
 
-```
+```bash
 Min  Hour Day  Mon  Weekday
 *    *    *    *    *   command to be executed
 ┬    ┬    ┬    ┬    ┬
@@ -14,7 +14,7 @@ Min  Hour Day  Mon  Weekday
 
 ### Examples
 
-```
+```bash
 0    *   * * *	every hour
 */15 *   * * *	every 15 mins
 0    */2 * * *	every 2 hours

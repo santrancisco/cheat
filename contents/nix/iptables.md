@@ -41,7 +41,7 @@ Checkout https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html for 
 
 Example iptables script with openvpn, a chain to log and drop
 
-```
+```bash
 ## Creating a new chain that would log and block
 iptables -N LOGGINGDROP
 
@@ -75,19 +75,20 @@ iptables -A LOGGINGDROP -j DROP
 
 Forward all UDP traffics from 80 to 200000 to a single port (53). Useful when we want to run a honeypot or a vpn server to escape out from hotel wifi.
 
-```
+```bash
 iptables -t nat -A PREROUTING --src 0/0 --dst 167.179.116.167 -p udp --dport 80:20000 -j REDIRECT --to-ports 53
 ```
+
 Blocking new connection to port 22 for 15 minutes after 3 new connections.
 
-```
+```bash
 iptables -I INPUT -p tcp --dport 22 -i eth0 -m state --state NEW -m recent --set
 iptables -I INPUT -p tcp --dport 22 -i eth0 -m state --state NEW -m recent --update --seconds 900 --hitcount 3 -j DROP
 ```
 
 NAT all traffic from internal interface (eth1) to internet/external interface (eth0):
 
-```
+```bash
 echo 1 > /proc/sys/net/ipv4/ip_forward
 iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUERADE
 iptables --append FORWARD --in-interface eth1 -j ACCEPT
@@ -95,7 +96,7 @@ iptables --append FORWARD --in-interface eth1 -j ACCEPT
 
 iptables rule to deny all outgoing traffic for user name tor but allow connections to specific local ports belong to local tor daemon SOCK proxy. 
 
-```
+```bash
 sudo iptables -A OUTPUT -m owner --gid-owner tor -d 127.0.0.0/24 -p tcp -m multiport --dports 9050,9051,9150,9151 -j ACCEPT
 sudo iptables -A OUTPUT -m owner --gid-owner tor -d 0.0.0.0/0 -j REJECT
 ```

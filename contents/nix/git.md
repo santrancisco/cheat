@@ -4,7 +4,7 @@
 
 Branch whenever we start pantest:
 
-```
+```bash
 ### Create local branch for myself where we add/commit all our changes
 git branch san_local
 ### checkout our local branch
@@ -20,15 +20,16 @@ git merge remotes/origin/feat/cert-auth
 
 create a new `sanmessingaround` local branch to track local changes and push it to remote branch in github to track it and work with others
 
-```
+```bash
     git checkout -b sanmessingaround
     git add 
     git commit "messing around"
     git push origin sanmessingaround --set-upstream
 ```
+
 After making your changes & you want to catch up with master:
 
-```
+```bash
     git checkout master; 
     git pull; 
     git checkout sanmessingaround; 
@@ -38,7 +39,7 @@ After making your changes & you want to catch up with master:
 
 To ignore file mode changes `git config core.fileMode false`. Reverse all filemode changes:
 
-```
+```bash
 git diff -p -R --no-color \
     | grep -E "^(diff|(old|new) mode)" --color=never  \
     | git apply
@@ -48,7 +49,7 @@ git diff -p -R --no-color \
 
 If you want to squash every commit from commit `9358e6cad6944f09bc1aa51d9a7cf3fc262da952`, first run git rebase, pick/squash commit then force push to 22
 
-```
+```bash
 git rebase -i 9358e6cad6944f09bc1aa51d9a7cf3fc262da952
 
 #################################################
@@ -62,8 +63,7 @@ git push -f origin
 
 **Update a forked project**
 
-
-```
+```bash
 # Add the remote, call it "upstream":
 git remote add upstream https://github.com/whoever/whatever.git
 
