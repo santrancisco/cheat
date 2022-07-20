@@ -13,3 +13,5 @@ To clean cache `go clean --modcache`
 To download specific version/commit : `go get "github.com/importpath@e224{COMMIT-HASH}`
 
 To remove unused dependencies or install new ones `go mod tidy`
+
+To download all dependencies to `/vendors/` folder: `go mod vendor`

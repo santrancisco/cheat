@@ -31,3 +31,11 @@ Run simple http server in port 8889
 python2.7 -m SimpleHTTPServer 8889
 python3 -m http.server 8889
 ```
+
+Simple `__str__` function for development to print and debug objects
+
+```python
+def __str__(self):
+  return json.dumps(self.__dict__, indent=2, separators=(',', ': '))
+```
+Generate requirements.txt for a project : `pipreqs /path/to/project`

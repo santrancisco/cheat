@@ -24,3 +24,8 @@ reg query  "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run"
 ```powershell
 Get-ScheduledTask | where {$_.taskpath -notmatch 'microsoft'}
 ```
+
+Get executable created since certain date
+```powershell
+Get-ChildItem G:\ -recurse | where {$_.extension -eq ".exe"} |  where-object {$_.lastwritetime -gt [datetime]::parse("02/19/2022")} 
+```

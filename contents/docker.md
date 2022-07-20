@@ -54,8 +54,8 @@ WPScan
 docker pull wpscanteam/wpscan
 # Enumerate user
 docker run -it --rm wpscanteam/wpscan --url https://ourtarget.com/ --enumerate u
-# Scan website with wpvulndb token
-docker run -it --rm wpscanteam/wpscan --url https://ourtarget.com/ -o scanoutput.txt --api-token {{https://wpvulndb.com/ token}}
+# Scan website with wpvulndb token and output to a file in host
+docker run -it -v `pwd`:/test --rm wpscanteam/wpscan --url https://ourtarget.com/ -o /test/scanoutput.txt --api-token {{https://wpvulndb.com/ token}}
 # Scan with custom content and plugin directory
 docker run -it --rm wpscanteam/wpscan --url https://ourtarget.com/ --wp-content-dir content  --wp-plugin-dir "content/plugins"
 ```
@@ -67,7 +67,28 @@ docker pull atmoz/sftp
 docker run -v /host/upload:/home/foo/upload -p 2222:22 -d atmoz/sftp foo:pass:1001
 ```
 
-Splunk in docker: https://github.com/splunk/docker-splunk
+Splunk for local investigation. Splunk in docker: https://github.com/splunk/docker-splunk
+```bash
+docker run -d -p 8000:8000 -e "SPLUNK_START_ARGS=--accept-license" -e "SPLUNK_PASSWORD=$SPLUNKPASS" --name splunk splunk/splunk:latest
+```
+
+Need a chrome browser inside docker to checkout dodgy website? Use kasmweb/chrome. After running the command, visit https://localhost:6901 (Chrome may throw certificate issue and refuse to move forward. Just enter "thisisunsafe" and the page will reload). Use "kasm_user" as username and the password enter in command below to enter.
+
+```bash
+docker run --rm  -it --shm-size=512m -p 127.0.0.1:6901:6901 -e VNC_PW=password kasmweb/chrome:1.8.0-edge
+```
+
+Need a tor browser to look at some flashpoint intel feed? 
+
+```bash
+docker run --rm  -it --shm-size=512m -p 6901:6901 -e VNC_PW=password kasmweb/tor-browser:1.10.0-rolling
+```
+
+Need a telegram:
+
+```bash
+docker run  -it --shm-size=512m -p 6901:6901 -e VNC_PW=password --name telegram  kasmweb/telegram:1.10.0-rolling
+```
 
 ## Notes
 
@@ -98,7 +119,18 @@ docker push santrancisco/sanctf:latest
 Series of command to list all repositories in one region, list the images in it and grab the ECR vulnerability image scanning result.
 
 ```bash
-aws --region ap-southeast-2 ecr describe-repositories 
+aws --region ap-santranciscosoutheast-2 ecr describe-repositories 
 aws --region ap-southeast-2 ecr describe-images --repository-name firefoxsend
 aws --region ap-southeast-2 ecr describe-image-scan-findings --repository-name firefoxsend --image-id imageTag=latest
+```
+
+## Managing multiple docker swamp
+
+Below is an easy way to manage docker remotely over SSH. Note that the user used here need to have docker access on remote server.
+
+```bash
+docker context create removeserver --default-stack-orchestrator=swarm  --docker "host=ssh://username@removeserverdocker.address:2222"
+docker context use removeserver
+## Or using environment variable to temporary switch:
+DOCKER_CONTEXT=removeserver docker ps
 ```

@@ -14,6 +14,7 @@ git branch -a
 ### merge with the feature we wanna test
 git merge remotes/origin/feat/cert-auth
 ```
+
 ----------
 
 ## Dev
@@ -89,6 +90,7 @@ git push -f origin master
 `git config --get remote.origin.url` Get remote URL of repo
 `git remote show origin` Get full output about remote git
 `git status --ignored`  Show modified files as well as ignored files
+`git grep AWS_ACCESS_KEY_ID $(git rev-list --all)` Search all previous commits for AWS key
 
 3 useful commands to exclude local changes, re-include and list what are excluded:
 

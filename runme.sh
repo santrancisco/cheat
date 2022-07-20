@@ -66,7 +66,7 @@ function gendoc {
 #    printf '\033[2J Below is the list of available cheatsheets:\n' >> ../$PUBLICFOLDER/index.html
     echo "[+] Going into folder $CONTENTFOLDER" 
     if [ -z "${FILES:-}" ]; then
-        find ./ -name '*.md' -exec bash -c "PUBLICFOLDER=$PUBLICFOLDER convertdoc {}" \;
+        find . -name '*.md' -exec bash -c "PUBLICFOLDER=$PUBLICFOLDER convertdoc {}" \;
     fi
     echo "[+] Generate web version"
     cd ..
@@ -94,8 +94,13 @@ function add_autocomplete {
     fi
     autocomplete=$(echo complete -W \"$autocomplete\" ch )
     echo "[+] Adding new ch bash completion in .bash_completion"
-    sed -i '/##CHBASHCOMPLETION##/!b;n;cREPLACELINEMARKER' $HOME/.bash_completion
-    sed -i "s|REPLACELINEMARKER|$autocomplete|g" $HOME/.bash_completion
+    # Linux way
+    # sed -i '/##CHBASHCOMPLETION##/!b;n;cREPLACELINEMARKER' $HOME/.bash_completion
+    # sed -i "s|REPLACELINEMARKER|$autocomplete|g" $HOME/.bash_completion
+    # Macosx way
+    linenum=$(grep -n "##CHBASHCOMPLETION##" ~/.bash_completion |cut -d : -f 1)
+    linenum=$(expr $linenum + 1)
+    sed -e "${linenum}s|.*|$autocomplete|" -i ~/.bash_completion
 }
 
 function pushtosurge {
@@ -105,7 +110,7 @@ function pushtosurge {
 
 function build_without_autocomplete {
     if [ -d "$PUBLICFOLDER" ]; then
-        rm -rIv $PUBLICFOLDER
+        rm -rv $PUBLICFOLDER
     fi
     mkdir -p $PUBLICFOLDER
     gendoc
@@ -115,7 +120,7 @@ function build_without_autocomplete {
 
 function build {
     if [ -d "$PUBLICFOLDER" ]; then
-        rm -rIv $PUBLICFOLDER
+        rm -rv $PUBLICFOLDER
     fi
     mkdir -p $PUBLICFOLDER
     gendoc

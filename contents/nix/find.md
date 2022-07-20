@@ -5,3 +5,9 @@ find . -iname "*.php" | sed 's/^\.\//https:\/\/www.serveraddress.com\//g' | \
    xargs -I {} -P100 curl -s -H "san-debug: pentest" --write-out '{}: %{http_code}\n' -o /dev/null {} | \
    tee /dev/tty | grep 200 > 200.txt
 ```
+
+Find files (type f) modified in the last 1 day (-mtime) and calculate its sha1 (-exec)
+
+```bash
+find ./ -type f -mtime -1 -exec shasum {} \;
+```

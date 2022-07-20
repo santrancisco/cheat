@@ -6,6 +6,18 @@ gdb dashboard is pretty damn neat if you have nothing.
 curl https://raw.githubusercontent.com/cyrus-and/gdb-dashboard/master/.gdbinit -o ~/.gdbinit
 ```
 
+### Find and attach
+
+find Process ID for specific app
+
+```bash
+pgrep -i challengebinary
+cat /proc/`pgrep challengebinary`/maps
+gdb --pid=`pgrep challengebinary`
+```
+If there is issue with attaching, Read [here](https://www.kernel.org/doc/Documentation/security/Yama.txt), turn off protection by `sudo bash` and execute `echo 0>/proc/sys/kernel/yama/ptrace_scope`
+
+
 
 ### Instructions
 

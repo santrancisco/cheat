@@ -6,7 +6,7 @@ If you want to replace all newlines with comma, simpler to use `tr` command:
 cat file.txt | tr '\n' ','
 ```
 
-An example of replacing a whole line after `##CHBASHCOMPLETION##` with REPLACELINEMARKER and then using 2nd sed command to replace REPLACELINEMARKER with content of environment variable which contains slashes "/" (hence we use `|` in sed replace command)
+An example of replacing a whole line after `##CHBASHCOMPLETION##` with REPLACELINEMARKER and then using 2nd sed command to replace REPLACELINEMARKER with content of environment variable which contains slashes "/" (hence we use `|` in sed replace command) (THIS ONLY WORK IN GNU-SED ... inbuilt MACOSX sed will not work)
 
 ```bash
 sed -i '/##CHBASHCOMPLETION##/!b;n;cREPLACELINEMARKER' $HOME/.bash_completion

@@ -28,7 +28,7 @@ index=main sourcetype=databaseconnector LogType=LoginInfo
 | iplocation prefix=iploc_ allfields=true IpAddress 
 | stats count by AppURL, ActionBy, IpAddress, iploc_Country, FirewallTrafficURL
 ```
-Explanation:
+*Explanation:*
 
 1 - Look in `index main` for items with LogType="`LoginInfo`"  
 AND
@@ -47,8 +47,96 @@ We run `iplocation` plugin and just incase it collide with some of the fields in
 
 Finally we extract and count only interesting fields.
 
+---
+
+*Another powerful combine search:*
+
+```Javascript
+[ search sourcetype="vpnlog" 
+    | search 
+        [ search sourcetype="useraction" AccountID=12345
+            | search userid="Admin-*" 
+            | eval adminuser=trim(replace(userid, "Admin-", "")) 
+            | eval user="DOMAIN\\"+adminuser 
+            | dedup user 
+            | table user 
+            | format 
+        ] 
+    | dedup src_ip 
+    | rename src_ip AS IpAddress 
+    | table user,IpAddress
+]  
+| outputlookup AdminIPs.csv
+```
+
+3 nested search: 
+ - Search the useraction log for user actions start with "Admin-"
+ - Process the log and extract the admin username, adding "DOMAIN\" infront so we can search vpn log for it
+ - Extract VPN logs for admin user and their log in IPs
+
+
+```Javascript
+sourcetype="useractions" 
+| search AccountID=12345
+| iplocation IpAddress 
+| join type=left IpAddress 
+    [ !inputlookup AdminIPs.csv
+    ]
+| rename user as AdminActOnBehalf
+| table TimeStamp, IpAddress, Country, userid, Action, AdminActOnBehalf
+```
+
+Now, going back to original sourcetype - useractions, we are looking for any row with Administrator IP Address and replace it with Admin's IP addresses. 
 
 *Note: All search fields have been modified from original queries*
+
+
+*A fucking big search*
+
+
+```Javascript
+sourcetype=nginx earliest=-10m 
+    [ search index=firewall earliest=-30m 
+    | search "tags{}.type"="maybemalicious" 
+    | rename remoteIP as remoteaddr 
+    | dedup remoteaddr 
+    | table remoteaddr 
+    | format] 
+| search uri=*EditorURI* 
+| dedup uri 
+| eval uri = trim(replace(uri, "POST ", "")) 
+| eval uri = trim(replace(uri, "GET ", "")) 
+| rex field=_raw "\+0000] (?<realhostname>[a-zA-Z0-9\.]*) " 
+| eval FinalURL = "https://"+realhostname+URI 
+| search FinalURL=* NOT 
+    [| inputlookup previousurls.csv 
+    | fields FinalURL 
+    | format ] 
+| appendpipe 
+    [| table FinalURL 
+    | dedup FinalURL 
+    | outputlookup append=t previousurls.csv
+        ] 
+| rename remoteaddr as IpAddress 
+| join type=left IpAddress 
+    [ search index=main AND sourcetype=authlog AND Event=Login earliest=-1h] 
+| eval "Output"=if(isnull(userid),$FinalURL$+"-Null-"+IpAddress,$FinalURL$+"-"+userid+"-"+IpAddress) 
+| table Output 
+| stats list(Output) as Output 
+| eval Output=mvjoin(Output, ",")
+```
+
+*Explanation:*
+ - Search firewall log for IP addresses that was flaged potentially malicious
+ - Search nginx log for those Ips and look for Editor URI so we can construct an URL to view this data being edited live 
+ - Due to some nginx parsing rule error, we may need to do some fancy magic regex to get the realhostname
+ - Construct the final URL
+ - Filter on only NEW urls because you may run this alert would be trigger periodically and can alert on same data over and over when user takes too long to edit.
+ - Any new urls, append it to the previousurls.csv lookup table
+ - rename remoteaddr to match with authlog index
+ - search authlog index and join Editor nginx event with the login event from db to know which userid this nginx event belong to
+ - Export this to parsable format by some sort of lambda function/ webhook downstream
+
 
 ### Complicated fields:
 
@@ -74,4 +162,21 @@ index=main sourcetype=pet PetName="*" | eval namelength=len(PetName) | eval "Rec
 
 ```
 
-Or just ask Yohann for help.
+
+### Debugs
+
+List all index and source-type:
+- Summary  : `| tstats values(sourcetype) where index=* group by index`
+- More info: `index=_internal source=*license_usage.log | table idx,st,s,h,_raw | dedup idx,st`
+
+Search splunkd internal log for error: `index=_internal sourcetype=splunkd "error"`
+
+### localsplunk for the win
+
+To run our own local splunk:
+
+```bash
+docker run -d -p 8000:8000 -e "SPLUNK_START_ARGS=--accept-license" -e "SPLUNK_PASSWORD=$SPLUNKPASS" --name splunk splunk/splunk:latest
+```
+
+To quickly add data for analysis is as simple as going to "Settings" -> Add Data -> File Upload

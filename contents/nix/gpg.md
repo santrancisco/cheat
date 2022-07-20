@@ -1,3 +1,21 @@
+### Import and trust my old gpg keys
+
+After pulling our private keys from encrypted hdd we import it (remember checking keepass for decryption key)
+Since our key is a bit old, let's renew and trust it as well
+
+```bash
+gpg import santrancisco-Secret.asc
+gpg --list-keys
+gpg --edit-key KEYID
+
+### Follow prompts for expire and trust below
+gpg> expire
+gpg> key 1
+gpg> expire
+gpg> trust
+gpg> save
+
+```
 To see who has access to a file:
 
 ```bash

@@ -73,6 +73,8 @@ The syntax for jq is pretty coherent:
 
 __WTF:__ When using jq with piping in terminal, any version below jq 1.6 will end up showing help menu for JQ
 
+jq print out with double quotes, to remove them, use `-r` for raw mode!
+
 jq can also be used to insert/modify values inside a json 
 
 ```bash
@@ -105,11 +107,17 @@ Fun:
  - convert to {key,value} dictionary using to_entries
  - slicing the new array
  - reconstruct new array again into another array of dictionaries with Name constructed from NodeType and its index.(Alpha-1,Beta-2 and so on)
- 
+
 
 ```bash
 jq ' reduce .[] as $k ([]; .[$k.nodes[]] = ($k|{nodetype,dict,bool4})) 
    | to_entries 
    | .[] 
    | reduce .[] as $k ([]; .[$k.key] = {name:"\($k.value.nodetype)-\($k.key)",dict:$k.value.dict})'  
+```
+
+Go through list of db instances, Concat address string and port number to form the list of db urls:
+
+```bash
+aws rds describe-db-instances | jq '.DBInstances[].Endpoint | .Address+":"+(.Port|tostring)'
 ```
