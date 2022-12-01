@@ -15,3 +15,9 @@ Reload Pulsesecure when it stuck on disconnecting or have dangling utun interfac
 sudo launchctl unload -w /Library/LaunchDaemons/net.pulsesecure.AccessService.plist
 sudo launchctl load -w /Library/LaunchDaemons/net.pulsesecure.AccessService.plist
 ```
+
+
+Adding key to apple key chain 
+```bash
+ssh-add --apple-use-keychain ~/.ssh/[your-private-key]
+```

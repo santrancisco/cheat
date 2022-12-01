@@ -100,7 +100,7 @@ function add_autocomplete {
     # Macosx way
     linenum=$(grep -n "##CHBASHCOMPLETION##" ~/.bash_completion |cut -d : -f 1)
     linenum=$(expr $linenum + 1)
-    sed -e "${linenum}s|.*|$autocomplete|" -i ~/.bash_completion
+    gsed -e "${linenum}s|.*|$autocomplete|" -i ~/.bash_completion
 }
 
 function pushtosurge {

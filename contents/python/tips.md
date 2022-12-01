@@ -54,3 +54,24 @@ if 'LAMBDA_TASK_ROOT' in os.environ:
 # this will render all of packages placed as subdirs available
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 ```
+
+
+
+### Decluster virtualenv
+
+There is no easy way to manage virtualenv for python - creating it inside/beside your application can be a pain as it may get included into your git commits  etc... 
+Here is a bash function that could help decluster:
+
+```bash
+function createvirtualenv() {
+  mkdir -p ~/.pythonvirtualenv/`pwd`
+  pushd ~/.pythonvirtualenv/`pwd`
+  virtualenv virtualenv
+  popd
+  source ~/.pythonvirtualenv/`pwd`/virtualenv/bin/activate
+}
+
+function loadvirtualenv {
+  source  ~/.pythonvirtualenv/`pwd`/virtualenv/bin/activate
+}
+```

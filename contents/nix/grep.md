@@ -15,3 +15,9 @@ simple use of if with multiple grep to identify lines that contains some words A
 ```bash
 if ! grep -q "donotinclude" ~/test/meh.tt && grep -Pq "(this|that)" ~/test/meh.tt; then echo "found_it"; fi
 ```
+
+tail a log file, find specific log string and fire alert to slack
+```bash
+export SLACKWEBHOOK=Yourwebhook
+while [ 1 ]; do (tail -f -n0 /mnt/xvdf1/asanbuild/stderr.log & ) | grep -q "AddressSanitizer" ; curl -X POST --data "{'text':'Found it - check log'}" "$SLACKWEBHOOK"; done
+```
